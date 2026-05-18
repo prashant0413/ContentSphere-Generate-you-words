@@ -66,6 +66,19 @@ const XSmIcon = ({ color }) => (
   </svg>
 );
 
+const CopyIcon = () => (
+  <svg viewBox="0 0 24 24" width={13} height={13} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg viewBox="0 0 24 24" width={13} height={13} fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
 // ─── Content Modes ────────────────────────────────────────────────────────────
 const CONTENT_MODES = [
   {
@@ -185,6 +198,16 @@ function TypingIndicator({ dark }) {
 function Message({ message, dark }) {
   const isUser = message.role === "user";
   const mode = message.modeId ? CONTENT_MODES.find(m => m.id === message.modeId) : null;
+  const [copied, setCopied] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(message.text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return (
     <div style={{ ...s.msgRow, flexDirection: isUser ? "row-reverse" : "row" }}>
       <div style={isUser
@@ -202,18 +225,52 @@ function Message({ message, dark }) {
             </span>
           </div>
         )}
-        <div style={{
-          ...s.bubble,
-          ...(isUser
-            ? { background: "#534AB7", color: "white", border: "1px solid #534AB7" }
-            : { background: dark ? "#1e2130" : "white", color: dark ? "#e2e8f0" : "#111827", border: `1px solid ${dark ? "#2d3348" : "#f3f4f6"}` }
-          ),
-          borderBottomRightRadius: isUser ? 4 : 16,
-          borderBottomLeftRadius: isUser ? 16 : 4,
-          whiteSpace: "pre-wrap",
-        }}>
-          {message.text}
+        <div
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          style={{ position: "relative" }}
+        >
+          <div style={{
+            ...s.bubble,
+            ...(isUser
+              ? { background: "#534AB7", color: "white", border: "1px solid #534AB7" }
+              : { background: dark ? "#1e2130" : "white", color: dark ? "#e2e8f0" : "#111827", border: `1px solid ${dark ? "#2d3348" : "#f3f4f6"}` }
+            ),
+            borderBottomRightRadius: isUser ? 4 : 16,
+            borderBottomLeftRadius: isUser ? 16 : 4,
+            whiteSpace: "pre-wrap",
+          }}>
+            {message.text}
+          </div>
+
+          {/* Copy button — only for bot messages */}
+          {!isUser && (hovered || copied) && (
+            <button
+              onClick={handleCopy}
+              title={copied ? "Copied!" : "Copy to clipboard"}
+              style={{
+                position: "absolute",
+                bottom: 8,
+                right: 8,
+                width: 26,
+                height: 26,
+                border: `1px solid ${dark ? "#3d4460" : "#e5e7eb"}`,
+                borderRadius: 6,
+                background: dark ? "#2d3348" : "#f9fafb",
+                color: copied ? "#1D9E75" : (dark ? "#9ca3af" : "#6b7280"),
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.15s",
+                padding: 0,
+              }}
+            >
+              {copied ? <CheckIcon /> : <CopyIcon />}
+            </button>
+          )}
         </div>
+
         <div style={{ ...s.time, textAlign: isUser ? "right" : "left", color: dark ? "#4b5563" : "#9ca3af" }}>
           {message.time}
         </div>
