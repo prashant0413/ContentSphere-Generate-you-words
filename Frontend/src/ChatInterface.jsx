@@ -1,4 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import axios from "axios";
+
+const API_URL = 'http://localhost:5000/api/content/generate';
 
 // ─── Icons ───────────────────────────────────────────────────────────────────
 const BotIcon = ({ size = 18 }) => (
@@ -87,11 +90,6 @@ const CONTENT_MODES = [
     emoji: "✉️",
     color: "#4f86f7",
     placeholder: "Describe the email — recipient, purpose, tone…",
-    prefix: "Write a professional email: ",
-    replies: [
-      "Here's a polished email draft:\n\nSubject: Following Up on Our Discussion\n\nDear [Recipient],\n\nI hope this message finds you well. I'm reaching out to follow up on our recent conversation and wanted to share a few key points.\n\n[Your main content here]\n\nPlease don't hesitate to reach out if you have any questions. I look forward to hearing from you.\n\nBest regards,\n[Your Name]",
-      "Here's a concise email:\n\nSubject: Quick Update\n\nHi [Name],\n\nJust a quick note to keep you in the loop — [your update here].\n\nHappy to jump on a call if easier. Let me know!\n\nCheers,\n[Your Name]",
-    ],
   },
   {
     id: "blog",
@@ -99,10 +97,6 @@ const CONTENT_MODES = [
     emoji: "📝",
     color: "#10b981",
     placeholder: "What's the topic, audience, and key points to cover?",
-    prefix: "Write a blog post about: ",
-    replies: [
-      "Here's a blog post draft:\n\n# [Your Title Here]\n\nIn today's fast-moving landscape, [topic] has never been more relevant. Whether you're just starting out or a seasoned professional, the principles here will help you navigate it with confidence.\n\n## Why It Matters\n[Opening argument with a compelling hook...]\n\n## Key Insights\n[Main body with supporting points...]\n\n## Takeaways\n[Actionable summary]\n\nWant me to expand any section or adjust the tone?",
-    ],
   },
   {
     id: "social",
@@ -110,10 +104,6 @@ const CONTENT_MODES = [
     emoji: "📣",
     color: "#f59e0b",
     placeholder: "Platform, message, tone — what's this post about?",
-    prefix: "Write a social media post: ",
-    replies: [
-      "Here's a social post:\n\n🚀 [Your headline here]\n\n[2-3 lines of engaging content that hooks the reader and delivers the message]\n\nWhat do you think? Drop a comment below! 👇\n\n#ContentMarketing #YourNiche #Trending\n\nShould I tailor this for LinkedIn, Instagram, or Twitter/X?",
-    ],
   },
   {
     id: "summary",
@@ -121,10 +111,6 @@ const CONTENT_MODES = [
     emoji: "📋",
     color: "#8b5cf6",
     placeholder: "Paste the content or describe what you want summarized…",
-    prefix: "Summarize: ",
-    replies: [
-      "Here's a concise summary:\n\n**Key Points:**\n• [Main point 1 — the most important takeaway]\n• [Main point 2 — supporting detail]\n• [Main point 3 — additional context]\n\n**Bottom Line:** [One clear sentence capturing the essence]\n\nNeed a shorter version or a different format (bullet points, executive summary, TL;DR)?",
-    ],
   },
 ];
 
@@ -137,14 +123,6 @@ function getNow() {
 }
 
 const SUGGESTIONS = ["Summarize a document", "Write an email", "Explain a concept", "Brainstorm ideas"];
-
-const DEFAULT_REPLIES = [
-  "Great! Could you share a bit more detail so I can help you better?",
-  "Sure, I can help with that. Here's a starting point — let me know if you'd like adjustments.",
-  "Happy to assist! What tone would you prefer — formal or conversational?",
-  "Of course. What's the target audience for this?",
-  "Got it. I'll tailor my response to fit your needs.",
-];
 
 const HISTORY = [
   { id: 1, title: "Product description help", preview: "Tell me about the product…", time: "Now" },
@@ -208,6 +186,14 @@ function Message({ message, dark }) {
     });
   };
 
+  const SOURCE_META = {
+    redis_cache: { label: "⚡ Redis Cache",  bg: "#fff3e0", color: "#e65100" },
+    mysql_cache: { label: "🗄️ MySQL Cache", bg: "#e3f2fd", color: "#1565c0" },
+    gemini_api:  { label: "🤖 Gemini AI",   bg: "#e8f5e9", color: "#2e7d32" },
+  };
+
+  const sourceMeta = message.source ? SOURCE_META[message.source] : null;
+
   return (
     <div style={{ ...s.msgRow, flexDirection: isUser ? "row-reverse" : "row" }}>
       <div style={isUser
@@ -225,11 +211,8 @@ function Message({ message, dark }) {
             </span>
           </div>
         )}
-        <div
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          style={{ position: "relative" }}
-        >
+
+        <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ position: "relative" }}>
           <div style={{
             ...s.bubble,
             ...(isUser
@@ -243,33 +226,33 @@ function Message({ message, dark }) {
             {message.text}
           </div>
 
-          {/* Copy button — only for bot messages */}
           {!isUser && (hovered || copied) && (
-            <button
-              onClick={handleCopy}
-              title={copied ? "Copied!" : "Copy to clipboard"}
-              style={{
-                position: "absolute",
-                bottom: 8,
-                right: 8,
-                width: 26,
-                height: 26,
-                border: `1px solid ${dark ? "#3d4460" : "#e5e7eb"}`,
-                borderRadius: 6,
-                background: dark ? "#2d3348" : "#f9fafb",
-                color: copied ? "#1D9E75" : (dark ? "#9ca3af" : "#6b7280"),
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.15s",
-                padding: 0,
-              }}
-            >
+            <button onClick={handleCopy} title={copied ? "Copied!" : "Copy to clipboard"} style={{
+              position: "absolute", bottom: 8, right: 8,
+              width: 26, height: 26,
+              border: `1px solid ${dark ? "#3d4460" : "#e5e7eb"}`,
+              borderRadius: 6,
+              background: dark ? "#2d3348" : "#f9fafb",
+              color: copied ? "#1D9E75" : (dark ? "#9ca3af" : "#6b7280"),
+              cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+              transition: "all 0.15s", padding: 0,
+            }}>
               {copied ? <CheckIcon /> : <CopyIcon />}
             </button>
           )}
         </div>
+
+        {/* Source badge */}
+        {sourceMeta && (
+          <div style={{ marginTop: 5 }}>
+            <span style={{
+              fontSize: 11, fontWeight: 600, padding: "2px 9px", borderRadius: 10,
+              background: sourceMeta.bg, color: sourceMeta.color,
+            }}>
+              {sourceMeta.label}
+            </span>
+          </div>
+        )}
 
         <div style={{ ...s.time, textAlign: isUser ? "right" : "left", color: dark ? "#4b5563" : "#9ca3af" }}>
           {message.time}
@@ -398,7 +381,6 @@ export default function ChatInterface() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
-  const [replyIdx, setReplyIdx] = useState(0);
   const [activeChat, setActiveChat] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [activeMode, setActiveMode] = useState(null);
@@ -417,23 +399,44 @@ export default function ChatInterface() {
     if (textareaRef.current) textareaRef.current.style.height = "auto";
   };
 
-  const sendMessage = useCallback((text) => {
+
+  const sendMessage = useCallback(async (text) => {
     const val = (text || input).trim();
     if (!val) return;
     const mode = activeMode;
-    setMessages(prev => [...prev, { id: Date.now(), role: "user", text: val, modeId: mode?.id || null, time: getNow() }]);
+
+    setMessages(prev => [...prev, {
+    id: Date.now(), role: "user", text: val, modeId: mode?.id || null, time: getNow()
+    }]);
     setInput("");
     setShowSuggestions(false);
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setIsTyping(true);
-    setTimeout(() => {
-      const pool = mode ? mode.replies : DEFAULT_REPLIES;
-      const reply = pool[replyIdx % pool.length];
-      setMessages(prev => [...prev, { id: Date.now() + 1, role: "bot", text: reply, time: getNow() }]);
-      setReplyIdx(i => i + 1);
-      setIsTyping(false);
-    }, 1400 + Math.random() * 600);
-  }, [input, replyIdx, activeMode]);
+
+    try {
+    const response = await axios.post(API_URL, {
+      type: mode?.id || "general",
+      prompt: val,
+    });
+    const { content, source } = response.data;
+    setMessages(prev => [...prev, {
+      id: Date.now() + 1,
+      role: "bot",
+      text: content,
+      source,
+      time: getNow()
+    }]);
+    } catch (err) {
+    setMessages(prev => [...prev, {
+      id: Date.now() + 1,
+      role: "bot",
+      text: "⚠️ " + (err.response?.data?.message || "Something went wrong. Please try again."),
+      time: getNow()
+    }]);
+    } finally {
+    setIsTyping(false);
+    }
+  }, [input, activeMode]); // ← correct deps: only input + activeMode
 
   const handleKeyDown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
   const handleInput = e => {
@@ -580,11 +583,11 @@ export default function ChatInterface() {
                 <button
                   className="ai-send"
                   onClick={() => sendMessage()}
-                  disabled={!input.trim()}
+                  disabled={!input.trim() || isTyping}
                   style={{
                     ...s.sendBtn, background: sendBg,
-                    opacity: input.trim() ? 1 : 0.4,
-                    cursor: input.trim() ? "pointer" : "default",
+                    opacity: input.trim() && !isTyping ? 1 : 0.4,
+                    cursor: input.trim() && !isTyping ? "pointer" : "default",
                     transition: "background 0.2s, opacity 0.15s",
                   }}
                 >
