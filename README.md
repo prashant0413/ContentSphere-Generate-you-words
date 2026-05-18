@@ -167,6 +167,7 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 ## Author
 
 **Prashant Vishwakarma** — [@prashant0413](https://github.com/prashant0413)
+**Dip Banerjee** — [@Dipbaner](https://github.com/Dipbaner)
 
 ---
 
