@@ -13,22 +13,22 @@ const SendIcon = () => (
   </svg>
 );
 
-const AttachIcon = () => (
-  <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const AttachIcon = ({ dark }) => (
+  <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke={dark ? "#6b7280" : "#9ca3af"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66L9.41 17.41a2 2 0 01-2.83-2.83l8.49-8.48" />
   </svg>
 );
 
-const MenuIcon = () => (
-  <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round">
+const MenuIcon = ({ dark }) => (
+  <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke={dark ? "#9ca3af" : "#6b7280"} strokeWidth="2" strokeLinecap="round">
     <line x1="3" y1="6" x2="21" y2="6" />
     <line x1="3" y1="12" x2="21" y2="12" />
     <line x1="3" y1="18" x2="21" y2="18" />
   </svg>
 );
 
-const CloseIcon = () => (
-  <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round">
+const CloseIcon = ({ dark }) => (
+  <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke={dark ? "#9ca3af" : "#6b7280"} strokeWidth="2" strokeLinecap="round">
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
@@ -41,15 +41,15 @@ const PlusIcon = () => (
   </svg>
 );
 
-const SearchIcon = () => (
-  <svg viewBox="0 0 24 24" width={13} height={13} fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round">
+const SearchIcon = ({ dark }) => (
+  <svg viewBox="0 0 24 24" width={13} height={13} fill="none" stroke={dark ? "#6b7280" : "#9ca3af"} strokeWidth="2" strokeLinecap="round">
     <circle cx="11" cy="11" r="6" />
     <path d="M21 21l-4.35-4.35" />
   </svg>
 );
 
-const MoreIcon = () => (
-  <svg viewBox="0 0 24 24" width={16} height={16} fill="#9ca3af">
+const MoreIcon = ({ dark }) => (
+  <svg viewBox="0 0 24 24" width={16} height={16} fill={dark ? "#9ca3af" : "#9ca3af"}>
     <circle cx="12" cy="5" r="1.5" />
     <circle cx="12" cy="12" r="1.5" />
     <circle cx="12" cy="19" r="1.5" />
@@ -59,6 +59,28 @@ const MoreIcon = () => (
 const ChatBubbleIcon = () => (
   <svg viewBox="0 0 24 24" width={13} height={13} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+  </svg>
+);
+
+// Sun icon for light mode
+const SunIcon = ({ dark }) => (
+  <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke={dark ? "#f9d71c" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="5" />
+    <line x1="12" y1="1" x2="12" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="23" />
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+    <line x1="1" y1="12" x2="3" y2="12" />
+    <line x1="21" y1="12" x2="23" y2="12" />
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+  </svg>
+);
+
+// Moon icon for dark mode
+const MoonIcon = ({ dark }) => (
+  <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke={dark ? "#9ca3af" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
   </svg>
 );
 
@@ -89,7 +111,7 @@ const HISTORY = [
 ];
 
 const INIT_MESSAGES = [
-  { id: 1, role: "bot", text: "Hi there! I'm Content-Sphere, your AI assistant. How can I help you today?", time: "9:41 AM" },
+  { id: 1, role: "bot", text: "Hi there! I'm ContentSphere, your AI assistant. How can I help you today?", time: "9:41 AM" },
   { id: 2, role: "user", text: "Can you help me write a product description?", time: "9:42 AM" },
   { id: 3, role: "bot", text: "Of course! Tell me about the product — what it does, who it's for, and any key features you'd like highlighted.", time: "9:42 AM" },
 ];
@@ -108,18 +130,22 @@ function useWindowWidth() {
 }
 
 // ─── TypingIndicator ─────────────────────────────────────────────────────────
-function TypingIndicator() {
+function TypingIndicator({ dark }) {
   return (
     <div style={s.msgRow}>
-      <div style={s.botAvatar}>A</div>
+      <div style={{ ...s.botAvatar }}>A</div>
       <div style={{
-        ...s.bubble, ...s.botBubble,
-        display: "flex", gap: 5, alignItems: "center", padding: "12px 16px"
+        ...s.bubble,
+        background: dark ? "#1e2130" : "white",
+        color: dark ? "#e2e8f0" : "#111827",
+        border: `1px solid ${dark ? "#2d3348" : "#f3f4f6"}`,
+        display: "flex", gap: 5, alignItems: "center", padding: "12px 16px",
+        borderBottomLeftRadius: 4,
       }}>
         {[0, 1, 2].map((i) => (
           <span key={i} style={{
             width: 7, height: 7, borderRadius: "50%",
-            background: "#9ca3af", display: "inline-block",
+            background: dark ? "#6b7280" : "#9ca3af", display: "inline-block",
             animation: `aiBounce 1.2s infinite ${i * 0.2}s`,
           }} />
         ))}
@@ -129,21 +155,31 @@ function TypingIndicator() {
 }
 
 // ─── Message ──────────────────────────────────────────────────────────────────
-function Message({ message }) {
+function Message({ message, dark }) {
   const isUser = message.role === "user";
   return (
     <div style={{ ...s.msgRow, flexDirection: isUser ? "row-reverse" : "row" }}>
-      <div style={isUser ? s.userAvatar : s.botAvatar}>{isUser ? "U" : "A"}</div>
+      <div style={isUser
+        ? { ...s.userAvatar, background: dark ? "#0f3028" : "#E1F5EE", color: dark ? "#34d399" : "#0F6E56" }
+        : { ...s.botAvatar }
+      }>{isUser ? "U" : "A"}</div>
       <div style={{ maxWidth: "75%" }}>
         <div style={{
           ...s.bubble,
-          ...(isUser ? s.userBubble : s.botBubble),
+          ...(isUser
+            ? { background: "#534AB7", color: "white", border: "1px solid #534AB7" }
+            : {
+                background: dark ? "#1e2130" : "white",
+                color: dark ? "#e2e8f0" : "#111827",
+                border: `1px solid ${dark ? "#2d3348" : "#f3f4f6"}`,
+              }
+          ),
           borderBottomRightRadius: isUser ? 4 : 16,
           borderBottomLeftRadius: isUser ? 16 : 4,
         }}>
           {message.text}
         </div>
-        <div style={{ ...s.time, textAlign: isUser ? "right" : "left" }}>
+        <div style={{ ...s.time, textAlign: isUser ? "right" : "left", color: dark ? "#4b5563" : "#9ca3af" }}>
           {message.time}
         </div>
       </div>
@@ -152,7 +188,7 @@ function Message({ message }) {
 }
 
 // ─── Chip ─────────────────────────────────────────────────────────────────────
-function Chip({ label, onClick }) {
+function Chip({ label, onClick, dark }) {
   const [hov, setHov] = useState(false);
   return (
     <button
@@ -161,8 +197,9 @@ function Chip({ label, onClick }) {
       onMouseLeave={() => setHov(false)}
       style={{
         ...s.chip,
-        background: hov ? "#f3f4f6" : "white",
-        borderColor: hov ? "#9ca3af" : "#e5e7eb",
+        background: hov ? (dark ? "#2d3348" : "#f3f4f6") : (dark ? "#1e2130" : "white"),
+        borderColor: hov ? (dark ? "#4b5563" : "#9ca3af") : (dark ? "#2d3348" : "#e5e7eb"),
+        color: dark ? "#9ca3af" : "#6b7280",
       }}
     >
       {label}
@@ -170,38 +207,91 @@ function Chip({ label, onClick }) {
   );
 }
 
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
-function Sidebar({ activeId, onSelect, onNew, onClose, isMobile }) {
+// ─── DarkModeToggle ───────────────────────────────────────────────────────────
+function DarkModeToggle({ dark, onToggle }) {
   return (
-    <div style={{ ...s.sidebar, width: isMobile ? 280 : 256 }}>
+    <button
+      onClick={onToggle}
+      title={dark ? "Switch to light mode" : "Switch to dark mode"}
+      style={{
+        width: 34, height: 34, border: "none",
+        background: dark ? "#2d3348" : "#f3f4f6",
+        borderRadius: 8, cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        flexShrink: 0, padding: 0,
+        transition: "background 0.2s",
+      }}
+    >
+      {dark ? <SunIcon dark={dark} /> : <MoonIcon dark={dark} />}
+    </button>
+  );
+}
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+function Sidebar({ activeId, onSelect, onNew, onClose, isMobile, dark, onToggleDark }) {
+  const bg = dark ? "#13151f" : "white";
+  const border = dark ? "#1e2130" : "#f3f4f6";
+  const textPrimary = dark ? "#e2e8f0" : "#111827";
+  const textMuted = dark ? "#4b5563" : "#9ca3af";
+
+  return (
+    <div style={{ ...s.sidebar, width: isMobile ? 280 : 256, background: bg }}>
       {/* Header */}
-      <div style={s.sidebarHeader}>
+      <div style={{ ...s.sidebarHeader, borderBottom: `1px solid ${border}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={s.logoIcon}><BotIcon size={15} /></div>
-          <span style={s.logoText}>Content-Sphere</span>
+          <span style={{ ...s.logoText, color: textPrimary }}>ContentSphere</span>
         </div>
-        {isMobile && (
-          <button onClick={onClose} style={s.ghostBtn}><CloseIcon /></button>
-        )}
+        <div style={{ display: "flex", gap: 4 }}>
+          <DarkModeToggle dark={dark} onToggle={onToggleDark} />
+          {isMobile && (
+            <button onClick={onClose} style={{ ...s.ghostBtn }}>
+              <CloseIcon dark={dark} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* New chat */}
       <div style={{ padding: "10px 10px 4px" }}>
-        <button className="ai-newchat" onClick={onNew} style={s.newChatBtn}>
+        <button
+          className="ai-newchat"
+          onClick={onNew}
+          style={{
+            ...s.newChatBtn,
+            background: dark ? "#1e2130" : "white",
+            border: `1px solid ${dark ? "#2d3348" : "#e5e7eb"}`,
+            color: dark ? "#d1d5db" : "#374151",
+          }}
+        >
           <PlusIcon /><span>New chat</span>
         </button>
       </div>
 
       {/* Search */}
       <div style={{ padding: "4px 10px 8px" }}>
-        <div style={s.searchBox}>
-          <SearchIcon />
-          <input className="ai-search" placeholder="Search chats…" style={s.searchInput} />
+        <div style={{
+          ...s.searchBox,
+          background: dark ? "#1e2130" : "#f9fafb",
+          border: `1px solid ${dark ? "#2d3348" : "#f3f4f6"}`,
+        }}>
+          <SearchIcon dark={dark} />
+          <input
+            className="ai-search"
+            placeholder="Search chats…"
+            style={{
+              ...s.searchInput,
+              color: dark ? "#e2e8f0" : "#111827",
+              background: "transparent",
+            }}
+          />
         </div>
       </div>
 
-      {/* History */}
-      <div style={s.historyLabel}>Recent</div>
+      {/* History label */}
+      <div style={{ ...s.historyLabel, color: textMuted }}>Recent</div>
+
+      {/* History list */}
       <div className="ai-sidebar-scroll" style={s.historyList}>
         {HISTORY.map((h) => (
           <button
@@ -210,29 +300,36 @@ function Sidebar({ activeId, onSelect, onNew, onClose, isMobile }) {
             onClick={() => onSelect(h.id)}
             style={{
               ...s.historyItem,
-              background: activeId === h.id ? "#EEEDFE" : "transparent",
+              background: activeId === h.id
+                ? (dark ? "#2a2d4a" : "#EEEDFE")
+                : "transparent",
+              color: textMuted,
             }}
           >
-            <div style={{ color: "#9ca3af", flexShrink: 0, marginTop: 1 }}>
+            <div style={{ color: textMuted, flexShrink: 0, marginTop: 1 }}>
               <ChatBubbleIcon />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={s.histTitle}>{h.title}</div>
-              <div style={s.histPreview}>{h.preview}</div>
+              <div style={{ ...s.histTitle, color: textPrimary }}>{h.title}</div>
+              <div style={{ ...s.histPreview, color: textMuted }}>{h.preview}</div>
             </div>
-            <div style={s.histTime}>{h.time}</div>
+            <div style={{ ...s.histTime, color: textMuted }}>{h.time}</div>
           </button>
         ))}
       </div>
 
       {/* Footer */}
-      <div style={s.sidebarFooter}>
-        <div style={{ ...s.userAvatar, background: "#E1F5EE", color: "#0F6E56" }}>U</div>
+      <div style={{ ...s.sidebarFooter, borderTop: `1px solid ${border}` }}>
+        <div style={{
+          ...s.userAvatar,
+          background: dark ? "#0f3028" : "#E1F5EE",
+          color: dark ? "#34d399" : "#0F6E56",
+        }}>U</div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <div style={{ fontSize: 13, fontWeight: 500, color: textPrimary, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             User
           </div>
-          <div style={{ fontSize: 11, color: "#9ca3af" }}>Free plan</div>
+          <div style={{ fontSize: 11, color: textMuted }}>Free plan</div>
         </div>
       </div>
     </div>
@@ -244,6 +341,7 @@ export default function ChatInterface() {
   const width = useWindowWidth();
   const isMobile = width < 768;
 
+  const [dark, setDark] = useState(false);
   const [messages, setMessages] = useState(INIT_MESSAGES);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -255,14 +353,15 @@ export default function ChatInterface() {
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
-  // sync sidebar with breakpoint changes
-  useEffect(() => {
-    setSidebarOpen(!isMobile);
-  }, [isMobile]);
-
+  useEffect(() => { setSidebarOpen(!isMobile); }, [isMobile]);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
+
+  // Update document title
+  useEffect(() => {
+    document.title = "ContentSphere";
+  }, []);
 
   const sendMessage = useCallback((text) => {
     const val = (text || input).trim();
@@ -297,41 +396,52 @@ export default function ChatInterface() {
     if (isMobile) setSidebarOpen(false);
   };
 
+  // Dark mode theme tokens
+  const panelBg = dark ? "#0d0f1a" : "#f9fafb";
+  const headerBg = dark ? "#13151f" : "white";
+  const headerBorder = dark ? "#1e2130" : "#f3f4f6";
+  const textPrimary = dark ? "#e2e8f0" : "#111827";
+  const textMuted = dark ? "#4b5563" : "#9ca3af";
+  const inputWrapBg = dark ? "#13151f" : "white";
+  const inputBorder = dark ? "#2d3348" : "#e5e7eb";
+
   return (
     <>
       <style>{`
         *, *::before, *::after { box-sizing: border-box; }
         html, body, #root { height: 100%; margin: 0; padding: 0; }
         @keyframes aiBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
-        .ai-textarea::placeholder { color: #9ca3af; }
+        .ai-textarea::placeholder { color: ${dark ? "#4b5563" : "#9ca3af"}; }
         .ai-textarea:focus { outline: none; }
-        .ai-inputwrap:focus-within { border-color: #534AB7 !important; box-shadow: 0 0 0 3px rgba(83,74,183,0.10); }
+        .ai-inputwrap:focus-within { border-color: #534AB7 !important; box-shadow: 0 0 0 3px rgba(83,74,183,${dark ? "0.18" : "0.10"}); }
         .ai-send:hover { opacity: 0.85; }
         .ai-send:active { transform: scale(0.97); }
-        .ai-newchat:hover { background: #f3f4f6 !important; }
-        .ai-histitem:hover { background: #f9fafb !important; }
+        .ai-newchat:hover { background: ${dark ? "#2d3348" : "#f3f4f6"} !important; }
+        .ai-histitem:hover { background: ${dark ? "#1e2130" : "#f9fafb"} !important; }
         .ai-search:focus { outline: none; }
-        .ai-search::placeholder { color: #9ca3af; font-size: 13px; }
+        .ai-search::placeholder { color: ${dark ? "#4b5563" : "#9ca3af"}; font-size: 13px; }
         .ai-sidebar-scroll::-webkit-scrollbar { width: 3px; }
-        .ai-sidebar-scroll::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+        .ai-sidebar-scroll::-webkit-scrollbar-thumb { background: ${dark ? "#2d3348" : "#e5e7eb"}; border-radius: 3px; }
         .ai-msglist::-webkit-scrollbar { width: 4px; }
-        .ai-msglist::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
-        .ai-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 10; }
+        .ai-msglist::-webkit-scrollbar-thumb { background: ${dark ? "#2d3348" : "#e5e7eb"}; border-radius: 4px; }
+        .ai-overlay { position: fixed; inset: 0; background: rgba(0,0,0,${dark ? "0.5" : "0.3"}); z-index: 10; }
+        .dark-toggle-btn { transition: background 0.2s, transform 0.15s; }
+        .dark-toggle-btn:hover { transform: scale(1.08); }
       `}</style>
 
-      {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
         <div className="ai-overlay" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div style={s.root}>
+      <div style={{ ...s.root, background: panelBg, transition: "background 0.25s" }}>
         {/* ── Sidebar ── */}
         {sidebarOpen && (
           <div style={{
             ...s.sidebarWrap,
+            borderRight: `1px solid ${headerBorder}`,
             ...(isMobile ? {
               position: "fixed", top: 0, left: 0, height: "100%",
-              zIndex: 20, boxShadow: "2px 0 16px rgba(0,0,0,0.12)",
+              zIndex: 20, boxShadow: "2px 0 16px rgba(0,0,0,0.18)",
             } : {}),
           }}>
             <Sidebar
@@ -344,25 +454,36 @@ export default function ChatInterface() {
               }}
               onClose={() => setSidebarOpen(false)}
               isMobile={isMobile}
+              dark={dark}
+              onToggleDark={() => setDark((d) => !d)}
             />
           </div>
         )}
 
         {/* ── Chat panel ── */}
-        <div style={s.chatPanel}>
+        <div style={{ ...s.chatPanel, background: panelBg, transition: "background 0.25s" }}>
           {/* Header */}
-          <div style={s.header}>
+          <div style={{
+            ...s.header,
+            background: headerBg,
+            borderBottom: `1px solid ${headerBorder}`,
+            transition: "background 0.25s",
+          }}>
             <button onClick={() => setSidebarOpen((v) => !v)} style={s.ghostBtn}>
-              <MenuIcon />
+              <MenuIcon dark={dark} />
             </button>
             <div style={s.headerAvatar}><BotIcon size={15} /></div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={s.headerName}>Content-Sphere — AI Assistant</div>
+              <div style={{ ...s.headerName, color: textPrimary }}>ContentSphere — AI Assistant</div>
               <div style={s.headerStatus}>
                 <span style={s.statusDot} />Online
               </div>
             </div>
-            <button style={s.ghostBtn}><MoreIcon /></button>
+            {/* Dark mode toggle in header (when sidebar is collapsed) */}
+            {!sidebarOpen && (
+              <DarkModeToggle dark={dark} onToggle={() => setDark((d) => !d)} />
+            )}
+            <button style={s.ghostBtn}><MoreIcon dark={dark} /></button>
           </div>
 
           {/* Messages */}
@@ -370,33 +491,46 @@ export default function ChatInterface() {
             {messages.length === 0 && (
               <div style={s.emptyState}>
                 <div style={s.emptyIconWrap}><BotIcon size={26} /></div>
-                <div style={s.emptyTitle}>Start a conversation</div>
-                <div style={s.emptySubtitle}>Ask me anything — I'm here to help.</div>
+                <div style={{ ...s.emptyTitle, color: textPrimary }}>Start a conversation</div>
+                <div style={{ ...s.emptySubtitle, color: textMuted }}>Ask me anything — I'm here to help.</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginTop: 20 }}>
                   {SUGGESTIONS.map((sug) => (
-                    <Chip key={sug} label={sug} onClick={() => sendMessage(sug)} />
+                    <Chip key={sug} label={sug} onClick={() => sendMessage(sug)} dark={dark} />
                   ))}
                 </div>
               </div>
             )}
-            {messages.map((msg) => <Message key={msg.id} message={msg} />)}
-            {isTyping && <TypingIndicator />}
+            {messages.map((msg) => <Message key={msg.id} message={msg} dark={dark} />)}
+            {isTyping && <TypingIndicator dark={dark} />}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Inline chips (after first message) */}
+          {/* Inline chips */}
           {showSuggestions && messages.length > 0 && (
             <div style={s.chipsRow}>
               {SUGGESTIONS.map((sug) => (
-                <Chip key={sug} label={sug} onClick={() => sendMessage(sug)} />
+                <Chip key={sug} label={sug} onClick={() => sendMessage(sug)} dark={dark} />
               ))}
             </div>
           )}
 
           {/* Input */}
-          <div style={s.inputArea}>
-            <div className="ai-inputwrap" style={s.inputWrap}>
-              <button style={s.attachBtn}><AttachIcon /></button>
+          <div style={{
+            ...s.inputArea,
+            background: headerBg,
+            borderTop: `1px solid ${headerBorder}`,
+            transition: "background 0.25s",
+          }}>
+            <div
+              className="ai-inputwrap"
+              style={{
+                ...s.inputWrap,
+                background: inputWrapBg,
+                border: `1px solid ${inputBorder}`,
+                transition: "background 0.25s, border-color 0.15s",
+              }}
+            >
+              <button style={s.attachBtn}><AttachIcon dark={dark} /></button>
               <textarea
                 ref={textareaRef}
                 className="ai-textarea"
@@ -405,7 +539,11 @@ export default function ChatInterface() {
                 onKeyDown={handleKeyDown}
                 rows={1}
                 placeholder="Type a message… (Enter to send)"
-                style={s.textarea}
+                style={{
+                  ...s.textarea,
+                  color: dark ? "#e2e8f0" : "#111827",
+                  background: "transparent",
+                }}
               />
               <button
                 className="ai-send"
@@ -420,7 +558,7 @@ export default function ChatInterface() {
                 <SendIcon />
               </button>
             </div>
-            <div style={s.hint}>Content-Sphere can make mistakes. Verify important information.</div>
+            <div style={{ ...s.hint, color: textMuted }}>ContentSphere can make mistakes. Verify important information.</div>
           </div>
         </div>
       </div>
@@ -431,377 +569,110 @@ export default function ChatInterface() {
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const s = {
   root: {
-    display: "flex",
-    height: "100vh",
-    width: "100%",
-    background: "#f9fafb",
+    display: "flex", height: "100vh", width: "100%",
     fontFamily: "'DM Sans', system-ui, sans-serif",
-    overflow: "hidden",
-    position: "relative",
+    overflow: "hidden", position: "relative",
   },
-
-  // Sidebar
-  sidebarWrap: {
-    flexShrink: 0,
-    height: "100%",
-    borderRight: "1px solid #f3f4f6",
-  },
+  sidebarWrap: { flexShrink: 0, height: "100%" },
   sidebar: {
-    height: "100%",
-    background: "white",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
+    height: "100%", display: "flex", flexDirection: "column", overflow: "hidden",
   },
   sidebarHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "15px 14px 12px",
-    borderBottom: "1px solid #f3f4f6",
-    flexShrink: 0,
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    padding: "15px 14px 12px", flexShrink: 0,
   },
   logoIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 7,
-    background: "#534AB7",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    width: 28, height: 28, borderRadius: 7, background: "#534AB7",
+    display: "flex", alignItems: "center", justifyContent: "center",
   },
-  logoText: {
-    fontSize: 15,
-    fontWeight: 500,
-    color: "#111827",
-    letterSpacing: "-0.02em",
-  },
+  logoText: { fontSize: 15, fontWeight: 500, letterSpacing: "-0.02em" },
   newChatBtn: {
-    display: "flex",
-    alignItems: "center",
-    gap: 7,
-    width: "100%",
-    padding: "8px 10px",
-    border: "1px solid #e5e7eb",
-    borderRadius: 9,
-    background: "white",
-    cursor: "pointer",
-    fontSize: 13,
-    fontWeight: 500,
-    color: "#374151",
-    fontFamily: "inherit",
-    transition: "background 0.12s",
+    display: "flex", alignItems: "center", gap: 7, width: "100%",
+    padding: "8px 10px", borderRadius: 9, cursor: "pointer",
+    fontSize: 13, fontWeight: 500, fontFamily: "inherit", transition: "background 0.12s",
   },
   searchBox: {
-    display: "flex",
-    alignItems: "center",
-    gap: 7,
-    padding: "7px 10px",
-    background: "#f9fafb",
-    borderRadius: 8,
-    border: "1px solid #f3f4f6",
+    display: "flex", alignItems: "center", gap: 7, padding: "7px 10px", borderRadius: 8,
   },
-  searchInput: {
-    border: "none",
-    background: "transparent",
-    fontSize: 13,
-    color: "#111827",
-    flex: 1,
-    fontFamily: "inherit",
-    minWidth: 0,
-  },
+  searchInput: { border: "none", fontSize: 13, flex: 1, fontFamily: "inherit", minWidth: 0 },
   historyLabel: {
-    fontSize: 10,
-    fontWeight: 500,
-    color: "#9ca3af",
-    textTransform: "uppercase",
-    letterSpacing: "0.07em",
-    padding: "6px 14px 4px",
-    flexShrink: 0,
+    fontSize: 10, fontWeight: 500, textTransform: "uppercase",
+    letterSpacing: "0.07em", padding: "6px 14px 4px", flexShrink: 0,
   },
-  historyList: {
-    flex: 1,
-    overflowY: "auto",
-    padding: "0 6px",
-  },
+  historyList: { flex: 1, overflowY: "auto", padding: "0 6px" },
   historyItem: {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: 8,
-    width: "100%",
-    padding: "8px 8px",
-    border: "none",
-    borderRadius: 8,
-    cursor: "pointer",
-    fontFamily: "inherit",
-    textAlign: "left",
-    transition: "background 0.1s",
-    marginBottom: 2,
+    display: "flex", alignItems: "flex-start", gap: 8, width: "100%",
+    padding: "8px 8px", border: "none", borderRadius: 8, cursor: "pointer",
+    fontFamily: "inherit", textAlign: "left", transition: "background 0.1s", marginBottom: 2,
   },
-  histTitle: {
-    fontSize: 13,
-    fontWeight: 500,
-    color: "#111827",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  },
-  histPreview: {
-    fontSize: 12,
-    color: "#9ca3af",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    marginTop: 1,
-  },
-  histTime: {
-    fontSize: 11,
-    color: "#9ca3af",
-    flexShrink: 0,
-    marginTop: 1,
-  },
+  histTitle: { fontSize: 13, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  histPreview: { fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginTop: 1 },
+  histTime: { fontSize: 11, flexShrink: 0, marginTop: 1 },
   sidebarFooter: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    padding: "12px 14px",
-    borderTop: "1px solid #f3f4f6",
-    flexShrink: 0,
+    display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", flexShrink: 0,
   },
-
-  // Chat panel
-  chatPanel: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-    minWidth: 0,
-    background: "#f9fafb",
-  },
+  chatPanel: { flex: 1, display: "flex", flexDirection: "column", height: "100%", minWidth: 0 },
   header: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    padding: "11px 14px",
-    background: "white",
-    borderBottom: "1px solid #f3f4f6",
-    flexShrink: 0,
+    display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", flexShrink: 0,
   },
   headerAvatar: {
-    width: 34,
-    height: 34,
-    borderRadius: "50%",
-    background: "#534AB7",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
+    width: 34, height: 34, borderRadius: "50%", background: "#534AB7",
+    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
   },
-  headerName: {
-    fontSize: 14,
-    fontWeight: 500,
-    color: "#111827",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  },
-  headerStatus: {
-    fontSize: 11,
-    color: "#1D9E75",
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    marginTop: 1,
-  },
-  statusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: "50%",
-    background: "#1D9E75",
-    display: "inline-block",
-  },
+  headerName: { fontSize: 14, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  headerStatus: { fontSize: 11, color: "#1D9E75", display: "flex", alignItems: "center", gap: 4, marginTop: 1 },
+  statusDot: { width: 6, height: 6, borderRadius: "50%", background: "#1D9E75", display: "inline-block" },
   ghostBtn: {
-    width: 34,
-    height: 34,
-    border: "none",
-    background: "transparent",
-    borderRadius: 8,
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-    padding: 0,
+    width: 34, height: 34, border: "none", background: "transparent",
+    borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center",
+    justifyContent: "center", flexShrink: 0, padding: 0,
   },
-
-  // Messages
   messageList: {
-    flex: 1,
-    overflowY: "auto",
-    padding: "20px 16px 8px",
-    display: "flex",
-    flexDirection: "column",
-    gap: 14,
+    flex: 1, overflowY: "auto", padding: "20px 16px 8px",
+    display: "flex", flexDirection: "column", gap: 14,
   },
-  msgRow: {
-    display: "flex",
-    alignItems: "flex-end",
-    gap: 8,
-  },
+  msgRow: { display: "flex", alignItems: "flex-end", gap: 8 },
   botAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: "50%",
-    background: "#534AB7",
-    color: "white",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 11,
-    fontWeight: 500,
-    flexShrink: 0,
+    width: 28, height: 28, borderRadius: "50%", background: "#534AB7", color: "white",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: 11, fontWeight: 500, flexShrink: 0,
   },
   userAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: "50%",
-    background: "#E1F5EE",
-    color: "#0F6E56",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 11,
-    fontWeight: 500,
-    flexShrink: 0,
+    width: 28, height: 28, borderRadius: "50%",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: 11, fontWeight: 500, flexShrink: 0,
   },
-  bubble: {
-    padding: "10px 14px",
-    borderRadius: 16,
-    fontSize: 14,
-    lineHeight: 1.55,
-    wordBreak: "break-word",
-    whiteSpace: "pre-wrap",
-  },
-  botBubble: {
-    background: "white",
-    color: "#111827",
-    border: "1px solid #f3f4f6",
-  },
-  userBubble: {
-    background: "#534AB7",
-    color: "white",
-    border: "1px solid #534AB7",
-  },
-  time: {
-    fontSize: 11,
-    color: "#9ca3af",
-    marginTop: 4,
-  },
-
-  // Empty state
+  bubble: { padding: "10px 14px", borderRadius: 16, fontSize: 14, lineHeight: 1.55, wordBreak: "break-word", whiteSpace: "pre-wrap" },
+  time: { fontSize: 11, marginTop: 4 },
   emptyState: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "3rem 1.5rem",
-    textAlign: "center",
+    flex: 1, display: "flex", flexDirection: "column", alignItems: "center",
+    justifyContent: "center", padding: "3rem 1.5rem", textAlign: "center",
   },
   emptyIconWrap: {
-    width: 54,
-    height: 54,
-    borderRadius: 15,
-    background: "#534AB7",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 14,
+    width: 54, height: 54, borderRadius: 15, background: "#534AB7",
+    display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14,
   },
-  emptyTitle: {
-    fontSize: 17,
-    fontWeight: 500,
-    color: "#111827",
-    marginBottom: 5,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    color: "#9ca3af",
-  },
-
-  // Chips
-  chipsRow: {
-    display: "flex",
-    gap: 7,
-    flexWrap: "wrap",
-    padding: "2px 16px 10px",
-  },
+  emptyTitle: { fontSize: 17, fontWeight: 500, marginBottom: 5 },
+  emptySubtitle: { fontSize: 14 },
+  chipsRow: { display: "flex", gap: 7, flexWrap: "wrap", padding: "2px 16px 10px" },
   chip: {
-    padding: "6px 12px",
-    border: "1px solid #e5e7eb",
-    borderRadius: 20,
-    fontSize: 12,
-    color: "#6b7280",
-    cursor: "pointer",
-    fontFamily: "inherit",
-    transition: "background 0.12s, border-color 0.12s",
+    padding: "6px 12px", borderRadius: 20, borderWidth: 1, borderStyle: "solid",
+    fontSize: 12, cursor: "pointer", fontFamily: "inherit", transition: "background 0.12s, border-color 0.12s",
   },
-
-  // Input
-  inputArea: {
-    padding: "10px 14px 14px",
-    background: "white",
-    borderTop: "1px solid #f3f4f6",
-    flexShrink: 0,
-  },
+  inputArea: { padding: "10px 14px 14px", flexShrink: 0 },
   inputWrap: {
-    display: "flex",
-    alignItems: "flex-end",
-    gap: 8,
-    border: "1px solid #e5e7eb",
-    borderRadius: 14,
-    padding: "7px 8px 7px 12px",
-    background: "white",
-    transition: "border-color 0.15s, box-shadow 0.15s",
+    display: "flex", alignItems: "flex-end", gap: 8, borderRadius: 14,
+    padding: "7px 8px 7px 12px", transition: "border-color 0.15s, box-shadow 0.15s",
   },
-  attachBtn: {
-    border: "none",
-    background: "transparent",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    padding: "2px 2px 4px",
-    flexShrink: 0,
-  },
+  attachBtn: { border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", padding: "2px 2px 4px", flexShrink: 0 },
   textarea: {
-    flex: 1,
-    border: "none",
-    background: "transparent",
-    fontSize: 14,
-    color: "#111827",
-    resize: "none",
-    fontFamily: "inherit",
-    lineHeight: 1.55,
-    maxHeight: 120,
-    padding: 0,
-    margin: 0,
+    flex: 1, border: "none", background: "transparent", fontSize: 14,
+    resize: "none", fontFamily: "inherit", lineHeight: 1.55, maxHeight: 120, padding: 0, margin: 0,
   },
   sendBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    border: "none",
-    background: "#534AB7",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-    transition: "opacity 0.15s, transform 0.1s",
+    width: 36, height: 36, borderRadius: 10, border: "none", background: "#534AB7",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    flexShrink: 0, transition: "opacity 0.15s, transform 0.1s",
   },
-  hint: {
-    fontSize: 11,
-    color: "#9ca3af",
-    textAlign: "center",
-    marginTop: 8,
-  },
+  hint: { fontSize: 11, textAlign: "center", marginTop: 8 },
 };
